@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id          Int           @id @default(autoincrement())
+  externalId  Int?          @unique
+  name        String
+  email       String        @unique
+  role        Role          @default(USER)
+  createdAt   DateTime      @default(now())
+  tables      TableMember[]
+  posts       StudyPost[]
+  matchesAsLearner Match[]   @relation("learner")
+  matchesAsTeacher Match[]   @relation("teacher")
+  messages    Message[]
+}
+
+model Table {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String?
+  joinCode    String        @unique
+  ownerId     Int
+  owner       Profile       @relation(fields: [ownerId], references: [id])
+  createdAt   DateTime      @default(now())
+  members     TableMember[]
+  posts       StudyPost[]
+  matches     Match[]
+  messages    Message[]
+}
+
+model TableMember {
+  id         Int      @id @default(autoincrement())
+  profile    Profile  @relation(fields: [profileId], references: [id])
+  profileId  Int
+  table      Table    @relation(fields: [tableId], references: [id])
+  tableId    Int
+  credits    Int      @default(50)
+  joinedAt   DateTime @default(now())
+
+  @@unique([profileId, tableId])
+}
+
+model StudyPost {
+  id          Int       @id @default(autoincrement())
+  table       Table     @relation(fields: [tableId], references: [id])
+  tableId     Int
+  author      Profile   @relation(fields: [authorId], references: [id])
+  authorId    Int
+  title       String
+  content     String
+  type        PostType
+  bountyPrice Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Match {
+  id           Int         @id @default(autoincrement())
+  table        Table       @relation(fields: [tableId], references: [id])
+  tableId      Int
+  learner      Profile     @relation("learner", fields: [learnerId], references: [id])
+  learnerId    Int
+  teacher      Profile     @relation("teacher", fields: [teacherId], references: [id])
+  teacherId    Int
+  status       MatchStatus @default(PENDING)
+  bountyPrice  Int
+  createdAt    DateTime    @default(now())
+  completedAt  DateTime?
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  table      Table    @relation(fields: [tableId], references: [id])
+  tableId    Int
+  author     Profile  @relation(fields: [authorId], references: [id])
+  authorId   Int
+  content    String
+  createdAt  DateTime @default(now())
+}
+
+enum PostType {
+  OFFER
+  REQUEST
+}
+
+enum MatchStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+enum Role {
+  USER
+  ADMIN
+}

@@ -1,0 +1,153 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 100%;
+}
+
+/* ── Projector-proof container ─────────────────────────────────── */
+/*
+ * Prevents the "Warm Minimalist" grid from stretching too wide
+ * on ultra-wide monitors / projector displays.
+ */
+.prose-container {
+  width: 100%;
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 1440px) {
+  .prose-container {
+    max-width: 78rem;
+  }
+}
+
+/* ── Stage / projector safety ──────────────────────────────────── */
+.stage-safe {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+.stage-safe-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 100vh;
+  max-height: 100dvh;
+}
+
+@media (max-height: 800px), (max-width: 1280px) {
+  html.stage-safe {
+    font-size: 15px;
+  }
+
+  .stage-safe h1 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem) !important;
+  }
+
+  .stage-safe h2 {
+    font-size: clamp(1.25rem, 3vw, 1.75rem) !important;
+  }
+
+  .stage-safe .card-shadow {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  }
+}
+
+@media (max-height: 700px) {
+  html.stage-safe {
+    font-size: 14px;
+  }
+}
+
+/* ── Custom scrollbar (Webkit / Firefox) ───────────────────────── */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c9b99a #fbf9f6;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #fbf9f6;
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #c9b99a;
+  border-radius: 3px;
+  border: 1px solid #fbf9f6;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #b5a585;
+}
+
+/* ── Input focus ring (warm minimal) ───────────────────────────── */
+
+input,
+select,
+textarea,
+button {
+  outline: none;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid rgba(74, 55, 40, 0.35);
+  outline-offset: 2px;
+  border-color: #4a3728;
+  transition: outline-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* ── Selection color ──────────────────────────────────────────── */
+
+::selection {
+  background-color: rgba(74, 55, 40, 0.15);
+  color: #2b2b2b;
+}
+
+/* ── Utilities ─────────────────────────────────────────────────── */
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-shadow {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  }
+
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  }
+}
